@@ -18,16 +18,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UIImage *image = [UIImage imageNamed:@"cat_small.png"];
     self.help = [CBLayoutHelper layoutHelperWithConfig:[[CBLayoutHelperConfig alloc] init]];
-    
+    [self.help resetWithItemSize:image.size];
     
     for (int row = 0; row < self.help.pointList.count; row++) {
         NSArray *rlist = self.help.pointList[row];
         for (int col = 0; col < rlist.count; col++) {
-            CGPoint point = CGPointFromString(rlist[col]);
-            UIImageView *imgView = [[UIImageView alloc] initWithImage:self.help.config.chess];
-            imgView.frame = CGRectMake(point.x - self.help.singleSize.width / 2.f, point.y - self.help.singleSize.height / 2.f, self.help.singleSize.width, self.help.singleSize.height);
+            NSDictionary *dict = rlist[col];
+            CGPoint point = CGPointFromString(dict[@"point"]);
             
+            UIImageView *imgView = [[UIImageView alloc] initWithImage:image];
+            
+            imgView.frame = CGRectMake(point.x - self.help.singleSize.width / 2.f, point.y - self.help.singleSize.height / 2.f, self.help.singleSize.width, self.help.singleSize.height);
             [self.view addSubview:imgView];
         }
     }

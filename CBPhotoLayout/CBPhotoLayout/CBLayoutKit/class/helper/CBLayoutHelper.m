@@ -7,15 +7,14 @@
 //
 
 #import "CBLayoutHelper.h"
+#import "CBLayoutUnity.h"
 
 @interface CBLayoutHelperConfig()
 
 @property (nonatomic, assign) CGFloat minWidth;
 @property (nonatomic, assign) CGFloat minSpace;
-
 @property (nonatomic, assign) CGFloat overlapRatio;
 
-@property (nonatomic, assign) CGRect canvasFrame;
 
 @end
 
@@ -25,10 +24,17 @@
     
     self = [super init];
     if (self) {
-        self.chess = [UIImage imageNamed:@"cat_small.png"];
+        //不可再修改
         self.minWidth = 40.f;
         self.minSpace = -10.f;
         self.overlapRatio = 1/4.f;
+        
+        
+        //可以修改
+        self.spaceRatio = 0;
+        self.xOffestRatio = 0.f;
+        self.yOffestRatio = 0.f;
+
         self.canvasFrame = [UIScreen mainScreen].bounds;
     }
     return self;
@@ -42,6 +48,18 @@
 
 - (CGFloat)spaceRatio {
     return MIN(1, MAX(-self.overlapRatio, _spaceRatio));
+}
+
+- (CGFloat)overlapRatio {
+    return MIN(1, ABS(_overlapRatio));
+}
+
+- (CGFloat)xOffestRatio {
+    return MAX(-1/2.f, MIN(1/2.f, _xOffestRatio));
+}
+
+- (CGFloat)yOffestRatio {
+    return MAX(-1/2.f, MIN(1/2.f, _yOffestRatio));
 }
 
 @end
@@ -75,12 +93,7 @@
 
 #pragma mark - private
 
-- (void)settingInit {
-    if (!self.config.chess) {
-        return;
-    }
-    CGSize size = self.config.chess.size;
-    
+- (void)resetWithItemSize:(CGSize)size {
     if (size.width <= 0 || size.height <= 0) {
         return;
     }
@@ -96,23 +109,41 @@
 - (void)clacPointList {
     [self.pointList removeAllObjects];
     
-    NSInteger col = ceilf((self.config.canvasFrame.size.width + self.config.overlapRatio * self.singleSize.width) / (self.singleSize.width + self.config.overlapRatio * self.singleSize.width));
-    NSInteger row = ceilf((self.config.canvasFrame.size.height + self.config.overlapRatio * self.singleSize.height) / (self.singleSize.height + self.config.overlapRatio * self.singleSize.height));
-    
+    NSInteger col = ceilf(((self.config.canvasFrame.size.width - self.config.overlapRatio * self.singleSize.width) / (self.singleSize.width - self.config.overlapRatio * self.singleSize.width)) * 2);
+    NSInteger row = ceilf(((self.config.canvasFrame.size.height - self.config.overlapRatio * self.singleSize.height) / (self.singleSize.height - self.config.overlapRatio * self.singleSize.height)) * 2);
     
     CGPoint centerPoint = CGPointMake(col/2, row/2);
     CGPoint centerPointLocal = CGPointMake(CGRectGetMidX(self.config.canvasFrame), CGRectGetMidY(self.config.canvasFrame));
     
+    
+    //间隔
     CGFloat sw = self.config.spaceRatio * self.singleSize.width;
     CGFloat sh = self.config.spaceRatio * self.singleSize.height;
+    
+    
+    //拉伸x
+    CGFloat xOffest = self.config.xOffestRatio * self.singleSize.width;
+    
+    CGFloat yOffest = self.config.yOffestRatio * self.singleSize.height;
+    
     for (int r = 0; r < row; r ++) {
-        NSMutableArray *rlist = @[].mutableCopy;
+        NSMutableArray<NSDictionary *> *rlist = @[].mutableCopy;
         for (int c = 0; c < col; c ++) {
             CGFloat x = 0;
             CGFloat y = 0;
             x = centerPointLocal.x - (centerPoint.x - c) * (self.singleSize.width + sw);
             y = centerPointLocal.y - (centerPoint.y - r) * (self.singleSize.height + sh);
-            [rlist addObject:NSStringFromCGPoint(CGPointMake(x, y))];
+            
+//            BOOL isCenterRow = centerPoint.y == r;
+//            BOOL isCenterCol = centerPoint.x == c;
+            
+            x += xOffest * (centerPoint.y - r);
+            y += yOffest * (centerPoint.x - c);
+            
+            NSMutableDictionary *param = @{}.mutableCopy;
+            param[@"point"] = NSStringFromCGPoint(CGPointMake(x, y));
+            
+            [rlist addObject:param];
         }
         [self.pointList addObject:rlist];
     }
@@ -125,13 +156,6 @@
 }
 
 #pragma mark - set & get
-
-- (void)setConfig:(CBLayoutHelperConfig *)config {
-    _config = config;
-    
-    [self settingInit];
-    
-}
 
 - (NSMutableArray *)pointList {
     if (!_pointList) {

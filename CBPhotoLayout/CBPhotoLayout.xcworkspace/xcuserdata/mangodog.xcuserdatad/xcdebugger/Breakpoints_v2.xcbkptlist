@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CBPhotoLayout/CBLayoutKit/class/CBLayoutHelper.m"
-            timestampString = "554449991.0044709"
+            timestampString = "554455498.277213"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
             landmarkName = "-clacPointList"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CBPhotoLayout/CBLayoutKit/class/CBLayoutHelper.m"
-            timestampString = "554450018.562968"
+            timestampString = "554455498.277213"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "-clacPointList"
             landmarkType = "7">
          </BreakpointContent>

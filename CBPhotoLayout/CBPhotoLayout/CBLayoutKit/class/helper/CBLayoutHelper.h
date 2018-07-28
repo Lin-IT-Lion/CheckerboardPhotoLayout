@@ -11,16 +11,17 @@
 
 @interface CBLayoutHelperConfig : NSObject
 
-/**
- 图片 这里类比成棋子
- */
-@property (nonatomic, strong) UIImage *chess;
-
+//间隔比列为宽度的百分比 最小为-overlapRatio 最大为 1
 @property (nonatomic, assign) CGFloat spaceRatio;
 
-@property (nonatomic, assign) CGFloat xOffset;
+//x偏移百分比 -1/2.f到 1/2.f之间 宽度的比列
+@property (nonatomic, assign) CGFloat xOffestRatio;
 
-@property (nonatomic, assign) CGFloat yOffset;
+//y偏移百分比 -1/2.f到 1/2.f之间 高度的比列
+@property (nonatomic, assign) CGFloat yOffestRatio;
+
+
+@property (nonatomic, assign) CGRect canvasFrame;
 
 @property (nonatomic, assign) CGFloat chessAngle;
 
@@ -31,11 +32,19 @@
 
 @interface CBLayoutHelper : NSObject
 
-@property (nonatomic, strong, readonly) NSMutableArray *pointList;
+
+/**
+ 二维数组，最里面是个字典 提供
+ point 位置
+ ...
+ */
+@property (nonatomic, strong, readonly) NSMutableArray<NSMutableArray<NSDictionary *> *> *pointList;
 @property (nonatomic, strong, readonly) CBLayoutHelperConfig *config;
 @property (nonatomic, assign, readonly) CGSize singleSize;
 
 + (instancetype)layoutHelperWithConfig:(CBLayoutHelperConfig *)config;
+
+- (void)resetWithItemSize:(CGSize)size;
 
 //+ (instancetype)layoutHelperWithFile:(NSString *)fileName;
 //
